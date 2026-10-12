@@ -15,7 +15,7 @@ jobs:
       - name: Mock toolchain directory
         run: |
           mkdir -p .toolchain/bin
-          # 將系統已安裝的 ARM GCC 建立捷徑到 .toolchain 目錄
+          # 建立符號連結，使腳本在 .toolchain/bin 內能找到對應執行檔
           ln -s $(which arm-none-eabi-gcc) .toolchain/bin/arm-none-eabi-gcc
           ln -s $(which arm-none-eabi-objcopy) .toolchain/bin/arm-none-eabi-objcopy
           ln -s $(which arm-none-eabi-ar) .toolchain/bin/arm-none-eabi-ar
