@@ -6,16 +6,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install dependencies
+
+      - name: Install system toolchain
         run: |
           sudo apt update
           sudo apt install -y gcc-arm-none-eabi binutils-arm-none-eabi libpng-dev
+
+      - name: Mock toolchain directory
+        run: |
+          mkdir -p .toolchain/bin
+          # 將系統已安裝的 ARM GCC 建立捷徑到 .toolchain 目錄
+          ln -s $(which arm-none-eabi-gcc) .toolchain/bin/arm-none-eabi-gcc
+          ln -s $(which arm-none-eabi-objcopy) .toolchain/bin/arm-none-eabi-objcopy
+          ln -s $(which arm-none-eabi-ar) .toolchain/bin/arm-none-eabi-ar
+          ln -s $(which arm-none-eabi-as) .toolchain/bin/arm-none-eabi-as
+          ln -s $(which arm-none-eabi-ld) .toolchain/bin/arm-none-eabi-ld
+          ln -s $(which arm-none-eabi-nm) .toolchain/bin/arm-none-eabi-nm
+          ln -s $(which arm-none-eabi-ranlib) .toolchain/bin/arm-none-eabi-ranlib
+          ln -s $(which arm-none-eabi-readelf) .toolchain/bin/arm-none-eabi-readelf
+
       - name: Fetch sources & vendor
         run: |
           bash scripts/get-pokefirered.sh
           bash scripts/fetch-vendor.sh
+
       - name: Build ROM
         run: bash scripts/build-rom.sh
+
       - name: Upload Web Package
         uses: actions/upload-artifact@v4
         with:
