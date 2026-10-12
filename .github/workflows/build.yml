@@ -1,0 +1,23 @@
+name: Build Web Game
+on: [workflow_dispatch, push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y gcc-arm-none-eabi binutils-arm-none-eabi libpng-dev
+      - name: Fetch sources & vendor
+        run: |
+          bash scripts/get-pokefirered.sh
+          bash scripts/fetch-vendor.sh
+      - name: Build ROM
+        run: bash scripts/build-rom.sh
+      - name: Upload Web Package
+        uses: actions/upload-artifact@v4
+        with:
+          name: dailyred-web-game
+          path: web/
